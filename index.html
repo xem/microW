@@ -27,14 +27,17 @@
 <h3>Download</h3> <span>(v.1.00)</span>
 <br>
 <div id=dl>
-<a href="w.js" download>Commented<br>(5 kb)</a>
-<a href="w.min.js" download>Minified <br>(3kb, 1kb zipped)</a>
+<a href="w.js" download>Commented<br>(5kb)</a>
+<a href="w.min.js" download>Minified <br>(2.5kb, 1kb zipped)</a>
 <p>or load it in HTML:
 <pre class=language-html><code>&lt;script src=//xem.github.io/microW/w.min.js>&lt;/script></code></pre>
 </div>
-
-<h3>Basic usage</h3>
 <br>
+<br>
+<br>
+<br>
+<h2>How to use it</h2>
+<h3>Camera, light and built-in shapes with plain colors</h3>
 <pre id=api class=language-js><code>&lt;script>
 // WebGL 2 context
 gl = canvas.getContext('webgl2');
@@ -77,27 +80,28 @@ W.render(scene, gl, ratio);
 <br>
 <h3>Custom 3D models</h3>
 <br>
-<pre id=api class=language-js><code>&lt;script>// Custom shape: pyramid
+<pre id=api class=language-js><code>&lt;script>
+// Custom shape: pyramid
 pyramid = () => [
   // vertices: 
-  new Float32Array([
+  [
     -.5,-.5, .5,   .5,-.5, .5,    0, .5,  0,  // Front
      .5,-.5, .5,   .5,-.5,-.5,    0, .5,  0,  // Right
      .5,-.5,-.5,  -.5,-.5,-.5,    0, .5,  0,  // Back
     -.5,-.5,-.5,  -.5,-.5, .5,    0, .5,  0,  // Left
      .5,-.5, .5,  -.5,-.5, .5,  -.5,-.5,-.5, // down
      .5,-.5, .5,  -.5,-.5,-.5,   .5,-.5,-.5
-  ]),
+  ],
   
   // uv 
-  new Float32Array([
+  [
     0, 0,   1, 0,  .5, 1,  // Front
     0, 0,   1, 0,  .5, 1,  // Right
     0, 0,   1, 0,  .5, 1,  // Back
     0, 0,   1, 0,  .5, 1,  // Left
     1, 1,   0, 1,   0, 0,  // down
     1, 1,   0, 0,   1, 0
-  ])
+  ]
 ];
 
 // ...
@@ -110,10 +114,40 @@ scene = {
   objects: [
     {id:"p",model:"pyramid",size:[1.5,1,1.5],pos:[0,0,0],rot:[0,0,0],col:[.9,.6,.2]},
   ]
-}&lt;/script></code></pre>
+}
+&lt;/script></code></pre>
 
 <iframe src="demos/2.html" width=650 height=450 frameborder=no></iframe>
 </div>
+
+
+
+<br>
+<br>
+<br>
+<h3>Texturing and transparency</h3>
+<br>
+<pre id=api class=language-js><code>&lt;img src=tree.png id=tree>
+&lt;img src=brick.png id=brick>
+&lt;script>
+// ...
+scene = {
+
+  objects: [
+    // Opaque objects first...
+    {id:"cube1",model:"cube",size:[1,1,1],pos:[-.8,0,0],rot:[0,0,0],tex:brick},
+    {id:"cube1",model:"cube",size:[1,1,1],pos:[-.8,0,-7],rot:[0,0,0],tex:brick},
+
+    // ... then objects with transparency ordered from back to front
+    {id:"plane1",model:"plane",size:[1,1],pos:[-2,1,-2],rot:[0,0,0],tex:tree},
+    {id:"plane2",model:"plane",size:[1,1],pos:[.3,2,5],rot:[0,0,0],tex:tree},
+  ]
+};
+&lt;/script>
+</code></pre>
+
+<iframe src="demos/3.html" width=650 height=450 frameborder=no></iframe>
+
 <br>
 <br>
 <br>
@@ -122,15 +156,6 @@ scene = {
 <br>
 <br>
 </center>
-
-
-<br>
-<br>
-<br>
-<h3>Texturing (TODO)</h3>
-<br>
-
-
 <style>
 * { box-sizing: border-box }
 body { font-size: 14px; font-family: calibri, arial; text-align: center; }
