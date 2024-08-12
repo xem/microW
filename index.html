@@ -1,0 +1,265 @@
+﻿<!doctype html>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Tokyo+Zoo&display=swap" rel="stylesheet">
+<a href=//github.com/xem/microW><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>
+
+<center>
+<h1>MicroW</h1>
+<h2>An ultra micro WebGL2 framework</h2>
+
+<h3>Features</h3>
+<br>
+
+<ul class=top>
+<li>Built-in 3D models (plane & billboard)
+</span>
+<li>Custom 3D models & normals (<a href="obj2js">OBJ loader</a>)
+<li>Easy coloring, texturing, transparency
+<li>Groups of objects
+<li>Custom transformations
+<li>Controllable camera
+<li>Controllable light
+<li>Indexed or unindexed models
+<li>Less than 1kb!
+</ul>
+</center>
+
+<h3>Download</h3> <span>(v.1.00)</span>
+<br>
+<div id=dl>
+<a href="w.js" download>Commented, full<br>(kb)</a>
+<a href="w.min.full.js" download>Minified <br>(kb, kb zipped)</a>
+<p>or load it in HTML:
+<pre class=language-html><code>&lt;script src=//xem.github.io/microW/w.min.js>&lt;/script></code></pre>
+</div>
+
+<h3>API</h3>
+<br>
+<pre id=api class=language-js><code>// Start the framework
+W.reset(canvasElement);
+
+// Set clear color ("#fff" by default)
+W.clearColor("#rgb");
+
+// Set camera
+// Settings: position (x, y, z), angle (rx, ry, rz), fov
+W.camera({x, y, z, rx, ry, rz, fov});
+
+// Set light direction
+W.light({x, y, z});
+
+// Set ambient light's force (between 0 and 1)
+W.ambient(f);
+
+// Create a group of objects: name, position, rotation
+W.group({n, x, y, z, rx, ry, rz});
+
+// Draw a built-in 3D object
+// Settings: group, name, size, position, rotation, background color or texture
+let settings = {g, n, s, x, y, z, rx, ry, rz, b};
+W.plane(settings);
+W.billboard(settings);
+
+// Add and draw a custom 3D model
+W.add("custom_model", { vertices, uv, indices });
+W.custom_model(settings);
+
+// Transform a group or object: name, position, rotation
+W.move({n, size, x, y, z, rx, ry, rz});
+
+// Move camera / light: settings, animation, delay
+W.camera({x, y, z, rx, ry, rz});
+W.light({x, y, z});
+
+// Delete an element: name, delay
+W.delete(n);
+</code></pre>
+
+<h3>Examples / Tutorial</h3>
+<br>
+<div id=tuto>
+<br><b>1) Setup</b>
+<br>First, create a HTML5 canvas <pre class="language-html inline"><code>&lt;canvas id=canvasElement></pre></code> and call <pre class="language-js inline"><code>W.reset(canvasElement)</pre></code>.
+<br>By default, the camera is placed at [0,0,0], looking at the -Z axis, with a 30 degrees FoV.
+<br>The scene contains an ambient light and a directional light pointing to the bottom: [0, -1, 0].
+<br>You can set the camera's position, rotation and FoV using <pre class="language-js inline"><code>W.camera({x, y, z, rx, ry, rz, fov})</pre></code>.
+<br>You can set the directional light using <pre class="language-js inline"><code>W.light({x, y, z})</pre></code> and the ambient light leved using <pre class="language-js inline"><code>W.ambient(n)</pre></code>.
+<br>You can change the background color using <pre class="language-js inline"><code>W.clearColor(c)</pre></code> (where c is a hex RGB/RGBA string).
+<br>No need to start a render loop, the canvas is redrawn after each screen refresh.
+
+
+<br>
+<br>
+
+<iframe src="demos/1.html" width=850 height=490 frameBorder="0" loading="lazy"></iframe>
+
+
+<br><b>2) Draw built-in 3D models</b>
+
+<br>The full version of the framework includes 5 built-in shapes: <pre class="inline language-js"><code class="language-js">W.plane</code></pre>, <pre class="inline language-js"><code class="language-js">W.billboard</code></pre>, <pre class="inline language-js"><code class="language-js">W.cube</code></pre>, <pre class="inline language-js"><code class="language-js">W.pyramid</code></pre> and <pre class="inline language-js"><code class="language-js">W.sphere</code></pre>.
+<br>(Billboards are planes that always face the camera, and can be used to show sprites or particles for example.)
+<br>The shapes settings can contain the following values: <pre class="inline language-js"><code class="language-js">{g, n, size, w, h, d, x, y, z, rx, ry, rz, b, t, mix, s, mode}</code></pre>
+<ul style="columns:1">
+<li><b>n</b>: name (required if you want to transform the object later)
+<li><b>g</b>: parent group (if a group is set, the model will be transformed relatively to this group)
+<li><b>w, h, d</b> or <b>size</b> (size sets w, h and d to the same value. Otherwise, w, h and d can be set individually. Default: 1)
+<li><b>x, y, z</b>: position (default: 0, 0, 0)
+<li><b>rx, ry, rz</b>: rotation (default: 0, 0, 0)
+<li><b>b</b>: background color (a "#rgb" or "#rgba" hex value. The "#" is optional. Default: "888")
+<li><b>t</b>: background texture (an IMG, CANVAS or VIDEO element present in the DOM)
+<li><b>mix</b>: if both b and t are set, a mix value between 0 and 1 can be used to mix the color and texture (0: fully textured, 1: fully colored)
+<li><b>s</b>: enable smooth shading (requires the full version of the framework. Default: false)
+<li><b>mode</b>: drawing mode ("LINE_LOOP", "TRIANGLES", etc. Default: "TRIANGLES")
+<li><b>M</b>: custom transformation matrix (Array(16), replaces x, y, z, rx, ry, rz)
+<li><b>ns</b>: by default, the shape will be shaded according to the directional light, but it can be disabled with this "no shading" option
+</ul>
+Groups can be created using <pre class="inline language-js"><code class="language-js">W.group({n, x, y, z, rx, ry, rz})</code></pre> (or <pre class="inline language-js"><code class="language-js">W.group({n, M})</code></pre>) and can be nested.
+<br>
+<br>
+
+<iframe src="demos/2.html" width=850 height=440 frameBorder="0" loading="lazy"></iframe>
+<a class=link href="https://codepen.io/xem/pen/XWezLBE?editors=1010">Edit on Codepen</a>
+
+<br>
+<br><b>3) Draw custom 3D models</b>
+
+<br>Besides the built-in shapes, W can also import and display custom 3D models.
+<br>You'll need:
+<ul>
+<li>An array of vertices coordinates: [x, y, z, x, y, z, ...],
+<li>Optionally: an array of uv texture coordinates: [u, v, u, v, ...] (if the model is textured),
+<li>Optionally: an array of indices (if the model uses indexed buffers). W.js supports both indexed and unindexed models!
+<li>Optionally: an array of normals (if you don't want to use the built-in flat/smooth normals)
+</ul>
+Add the new model using <pre class="inline language-js"><code class="language-js">W.add("custom_shape", {vertices, uv, indices})</code></pre> and draw it using <pre class="inline language-js"><code class="language-js">W.custom_shape(settings)</code></pre>.
+<br>
+Custom models can be drawn with the same settings as the built-in ones (group, size, position, rotation, background, shading...).
+<br>Flat shading is applied by default, smooth shading is only available in the full version of the framework.
+<br>OBJ files can be converted into W custom models using the following online tool: <b><a href="./obj2js/">OBJ2JS</a></b>!
+<br>
+<br>
+
+<iframe src="demos/3.html" width=850 height=440 frameBorder="0" loading="lazy"></iframe>
+<a class=link href="https://codepen.io/xem/pen/ExwbBrp?editors=1010">Edit on Codepen</a>
+
+
+<br>
+<br>
+<br><b>4) Transformations and animation</b>
+
+
+<br>The groups and 3D shapes can be moved and transformed using <pre class="inline language-js"><code class="language-js">W.move({n, size, x, y, z, rx, ry, rz, b, t, a}, delay)</code></pre>.
+<br>If a <pre class="inline language-js"><code class="language-js">delay</code></pre> is provided, the transformation will be done after that delay in milliseconds. (0 by default)
+<br>If an <pre class="inline language-js"><code class="language-js">a</code></pre> parameter is provided, the transformation will be animated. The animation will last for <pre class="inline language-js"><code class="language-js">a</code></pre> milliseconds. (0 by default)
+<br>
+<br>The camera can be moved and animated using <pre class="inline language-js"><code class="language-js">W.camera({x, y, z, rx, ry, rz, a}, delay)</code></pre>.
+<br>The directional light can be moved and animated with <pre class="inline language-js"><code class="language-js">W.light({x, y, z, a}, delay)</code></pre>.
+
+
+<br>
+<br>
+<iframe src="demos/4.html" width=850 height=340 frameBorder="0" loading="lazy"></iframe>
+<a class=link href="https://codepen.io/xem/pen/qBPVeZG?editors=1010">Edit on Codepen</a>
+
+
+<br>
+<br>
+<br><b>5) Advanced techniques</b>
+
+<ul>
+<li>You can set a custom projection matrix with <pre class="inline language-js"><code class="language-js">W.projection=new DOMMatrix([...])</code></pre>.
+<br>The example below shows how to use an orthographic projection.
+</ul>
+
+<iframe src="demos/5.html" width=850 height=370 frameBorder="0" loading="lazy"></iframe>
+
+<a class=link href="https://codepen.io/xem/pen/jOaVWKR?editors=1010">Edit on Codepen</a>
+<br>
+<br>
+<ul>
+<li>You can set a custom transform matrix to any object with <pre class="inline language-js"><code class="language-js">W.move({n, M:[...]})</code></pre>.
+(animation is not possible in that case)
+<br>The example below shows how to perform asix-based rotations.
+</ul>
+
+<iframe src="demos/6.html" width=850 height=400 frameBorder="0" loading="lazy"></iframe>
+
+<a class=link href="https://codepen.io/xem/pen/zYPorMq?editors=1010">Edit on Codepen</a>
+<br>
+<br>
+<ul>
+<li>All the scene's objects can be used as a group and have other objects attached to it. The camera can also be put in a group.
+<li>The camera itself can be used as a group (to create a HUD or a skybox), or put inside a group (to make a 1st or 3rd person view).
+<br>The example below shows how to attach the camera to a moving character and attach a plane (the ground) to the camera.
+</ul>
+
+<iframe src="demos/7.html" width=850 height=420 frameBorder="0" loading="lazy"></iframe>
+
+<a class=link href="https://codepen.io/xem/pen/mdqrZpP?editors=1010">Edit on Codepen</a>
+<br>
+<br>
+<ul>
+<li>Items can be attached or detached from a group anytime using <pre class="inline language-js"><code class="language-js">W.move({g /* group / null */ })</code></pre>.
+</ul>
+
+<iframe src="demos/8.html" width=850 height=320 frameBorder="0" loading="lazy"></iframe>
+
+<a class=link href="https://codepen.io/xem/pen/OJObMro?editors=1010">Edit on Codepen</a>
+<br>
+<br>
+-->
+</ul>
+
+
+</div>
+<br>
+<br>
+<br>
+<h4 style=font-size:18px>2024 - xem, stas & kchplr</h4>
+<br>
+<br>
+<br>
+</center>
+
+
+
+
+<style>
+* { box-sizing: border-box }
+body { font-size: 14px; font-family: calibri, arial; text-align: center; }
+h1 { font-family: 'Zen Tokyo Zoo', cursive; font-weight: normal; font-size: 100px; line-height: 40px; margin: 80px 0 30px; }
+h2 { margin: 5px }
+h3 { text-align: center; text-decoration: underline; margin: 40px 0; display: inline-block; }
+#dl { text-align: center; width: 660px; margin: auto; font-size: 13px; }
+#dl a { border: 2px solid #000; border-right-width: 4px; border-bottom-width: 4px; width: 205px; height: 105px; display: inline-block; vertical-align: top; text-decoration: none; color: #000; padding: 25px 0 0; margin: 5px; background: #f8f8f8; font-size: 16px; }
+#dl pre { border: 2px solid #000; border-right-width: 4px; border-bottom-width: 4px; width: 650px; padding: 5px; margin: 15px auto 5px; text-align: center; }
+pre#api { border: 2px solid #000; border-right-width: 4px; border-bottom-width: 4px; width: 650px; padding: 10px; margin: 15px auto 5px; font-size: 14px; }
+ul.top { width: 680px; columns: 2; text-align: left; margin: 30px auto; padding: 0 0 0 80px; vertical-align: top; font-size: 16px;}
+ul.top li { font-size: 16px;}
+sub { display: block; font-size: 12px; margin: 2px 0 0; }
+svg { transform-origin: left bottom; transform: scale(.6); cursor: help; line-height: 5px;}
+a { text-decoration: none; color: #45f }
+#tuto { width: 800px; margin: 0 auto; text-align: left; line-height: 25px; }
+.inline, .inline code { display: inline !important; padding: 2px !important; background: #eee!important; font-size: 12px !important; font-weight: bold !important;}
+#tuto code { font-size: 12px }
+code * { letter-spacing: -.4px }
+a.link { display: block; width: 150px; background: #def; border-radius: 5px; border: 2px solid #248; text-align: center; color: #000; margin: 0 auto }
+</style>
+
+<style>
+/* PrismJS 1.25.0
+https://prismjs.com/download.html#themes=prism&languages=markup+css+clike+javascript */
+code[class*=language-],pre[class*=language-]{color:#000;background:0 0;text-shadow:0 1px #fff;font-family:Consolas,Monaco,'Andale Mono','Ubuntu Mono',monospace;font-size:1em;text-align:left;white-space:pre;word-spacing:normal;word-break:normal;word-wrap:normal;line-height:1.5;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-hyphens:none;-moz-hyphens:none;-ms-hyphens:none;hyphens:none}code[class*=language-] ::-moz-selection,code[class*=language-]::-moz-selection,pre[class*=language-] ::-moz-selection,pre[class*=language-]::-moz-selection{text-shadow:none;background:#b3d4fc}code[class*=language-] ::selection,code[class*=language-]::selection,pre[class*=language-] ::selection,pre[class*=language-]::selection{text-shadow:none;background:#b3d4fc}@media print{code[class*=language-],pre[class*=language-]{text-shadow:none}}pre[class*=language-]{padding:1em;margin:.5em 0;overflow:auto}:not(pre)>code[class*=language-],pre[class*=language-]{background:#f8f8f8}:not(pre)>code[class*=language-]{padding:.1em;border-radius:.3em;white-space:normal}.token.cdata,.token.comment,.token.doctype,.token.prolog{color:#708090}.token.punctuation{color:#999}.token.namespace{opacity:.7}.token.boolean,.token.constant,.token.deleted,.token.number,.token.property,.token.symbol,.token.tag{color:#905}.token.attr-name,.token.builtin,.token.char,.token.inserted,.token.selector,.token.string{color:#690}.language-css .token.string,.style .token.string,.token.entity,.token.operator,.token.url{color:#9a6e3a;background:hsla(0,0%,100%,.5)}.token.atrule,.token.attr-value,.token.keyword{color:#07a}.token.class-name,.token.function{color:#dd4a68}.token.important,.token.regex,.token.variable{color:#e90}.token.bold,.token.important{font-weight:700}.token.italic{font-style:italic}.token.entity{cursor:help}
+</style>
+
+
+<script>
+/* PrismJS 1.25.0
+https://prismjs.com/download.html#themes=prism&languages=markup+css+clike+javascript */
+var _self="undefined"!=typeof window?window:"undefined"!=typeof WorkerGlobalScope&&self instanceof WorkerGlobalScope?self:{},Prism=function(u){var t=/(?:^|\s)lang(?:uage)?-([\w-]+)(?=\s|$)/i,n=0,e={},M={manual:u.Prism&&u.Prism.manual,disableWorkerMessageHandler:u.Prism&&u.Prism.disableWorkerMessageHandler,util:{encode:function e(n){return n instanceof W?new W(n.type,e(n.content),n.alias):Array.isArray(n)?n.map(e):n.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/\u00a0/g," ")},type:function(e){return Object.prototype.toString.call(e).slice(8,-1)},objId:function(e){return e.__id||Object.defineProperty(e,"__id",{value:++n}),e.__id},clone:function t(e,r){var a,n;switch(r=r||{},M.util.type(e)){case"Object":if(n=M.util.objId(e),r[n])return r[n];for(var i in a={},r[n]=a,e)e.hasOwnProperty(i)&&(a[i]=t(e[i],r));return a;case"Array":return n=M.util.objId(e),r[n]?r[n]:(a=[],r[n]=a,e.forEach(function(e,n){a[n]=t(e,r)}),a);default:return e}},getLanguage:function(e){for(;e;){var n=t.exec(e.className);if(n)return n[1].toLowerCase();e=e.parentElement}return"none"},setLanguage:function(e,n){e.className=e.className.replace(RegExp(t,"gi"),""),e.classList.add("language-"+n)},currentScript:function(){if("undefined"==typeof document)return null;if("currentScript"in document)return document.currentScript;try{throw new Error}catch(e){var n=(/at [^(\r\n]*\((.*):[^:]+:[^:]+\)$/i.exec(e.stack)||[])[1];if(n){var t=document.getElementsByTagName("script");for(var r in t)if(t[r].src==n)return t[r]}return null}},isActive:function(e,n,t){for(var r="no-"+n;e;){var a=e.classList;if(a.contains(n))return!0;if(a.contains(r))return!1;e=e.parentElement}return!!t}},languages:{plain:e,plaintext:e,text:e,txt:e,extend:function(e,n){var t=M.util.clone(M.languages[e]);for(var r in n)t[r]=n[r];return t},insertBefore:function(t,e,n,r){var a=(r=r||M.languages)[t],i={};for(var l in a)if(a.hasOwnProperty(l)){if(l==e)for(var o in n)n.hasOwnProperty(o)&&(i[o]=n[o]);n.hasOwnProperty(l)||(i[l]=a[l])}var s=r[t];return r[t]=i,M.languages.DFS(M.languages,function(e,n){n===s&&e!=t&&(this[e]=i)}),i},DFS:function e(n,t,r,a){a=a||{};var i=M.util.objId;for(var l in n)if(n.hasOwnProperty(l)){t.call(n,l,n[l],r||l);var o=n[l],s=M.util.type(o);"Object"!==s||a[i(o)]?"Array"!==s||a[i(o)]||(a[i(o)]=!0,e(o,t,l,a)):(a[i(o)]=!0,e(o,t,null,a))}}},plugins:{},highlightAll:function(e,n){M.highlightAllUnder(document,e,n)},highlightAllUnder:function(e,n,t){var r={callback:t,container:e,selector:'code[class*="language-"], [class*="language-"] code, code[class*="lang-"], [class*="lang-"] code'};M.hooks.run("before-highlightall",r),r.elements=Array.prototype.slice.apply(r.container.querySelectorAll(r.selector)),M.hooks.run("before-all-elements-highlight",r);for(var a,i=0;a=r.elements[i++];)M.highlightElement(a,!0===n,r.callback)},highlightElement:function(e,n,t){var r=M.util.getLanguage(e),a=M.languages[r];M.util.setLanguage(e,r);var i=e.parentElement;i&&"pre"===i.nodeName.toLowerCase()&&M.util.setLanguage(i,r);var l={element:e,language:r,grammar:a,code:e.textContent};function o(e){l.highlightedCode=e,M.hooks.run("before-insert",l),l.element.innerHTML=l.highlightedCode,M.hooks.run("after-highlight",l),M.hooks.run("complete",l),t&&t.call(l.element)}if(M.hooks.run("before-sanity-check",l),(i=l.element.parentElement)&&"pre"===i.nodeName.toLowerCase()&&!i.hasAttribute("tabindex")&&i.setAttribute("tabindex","0"),!l.code)return M.hooks.run("complete",l),void(t&&t.call(l.element));if(M.hooks.run("before-highlight",l),l.grammar)if(n&&u.Worker){var s=new Worker(M.filename);s.onmessage=function(e){o(e.data)},s.postMessage(JSON.stringify({language:l.language,code:l.code,immediateClose:!0}))}else o(M.highlight(l.code,l.grammar,l.language));else o(M.util.encode(l.code))},highlight:function(e,n,t){var r={code:e,grammar:n,language:t};return M.hooks.run("before-tokenize",r),r.tokens=M.tokenize(r.code,r.grammar),M.hooks.run("after-tokenize",r),W.stringify(M.util.encode(r.tokens),r.language)},tokenize:function(e,n){var t=n.rest;if(t){for(var r in t)n[r]=t[r];delete n.rest}var a=new i;return I(a,a.head,e),function e(n,t,r,a,i,l){for(var o in r)if(r.hasOwnProperty(o)&&r[o]){var s=r[o];s=Array.isArray(s)?s:[s];for(var u=0;u<s.length;++u){if(l&&l.cause==o+","+u)return;var c=s[u],g=c.inside,f=!!c.lookbehind,h=!!c.greedy,d=c.alias;if(h&&!c.pattern.global){var v=c.pattern.toString().match(/[imsuy]*$/)[0];c.pattern=RegExp(c.pattern.source,v+"g")}for(var p=c.pattern||c,m=a.next,y=i;m!==t.tail&&!(l&&y>=l.reach);y+=m.value.length,m=m.next){var k=m.value;if(t.length>n.length)return;if(!(k instanceof W)){var x,b=1;if(h){if(!(x=z(p,y,n,f))||x.index>=n.length)break;var w=x.index,A=x.index+x[0].length,P=y;for(P+=m.value.length;P<=w;)m=m.next,P+=m.value.length;if(P-=m.value.length,y=P,m.value instanceof W)continue;for(var E=m;E!==t.tail&&(P<A||"string"==typeof E.value);E=E.next)b++,P+=E.value.length;b--,k=n.slice(y,P),x.index-=y}else if(!(x=z(p,0,k,f)))continue;var w=x.index,L=x[0],S=k.slice(0,w),O=k.slice(w+L.length),j=y+k.length;l&&j>l.reach&&(l.reach=j);var C=m.prev;S&&(C=I(t,C,S),y+=S.length),q(t,C,b);var N=new W(o,g?M.tokenize(L,g):L,d,L);if(m=I(t,C,N),O&&I(t,m,O),1<b){var _={cause:o+","+u,reach:j};e(n,t,r,m.prev,y,_),l&&_.reach>l.reach&&(l.reach=_.reach)}}}}}}(e,a,n,a.head,0),function(e){var n=[],t=e.head.next;for(;t!==e.tail;)n.push(t.value),t=t.next;return n}(a)},hooks:{all:{},add:function(e,n){var t=M.hooks.all;t[e]=t[e]||[],t[e].push(n)},run:function(e,n){var t=M.hooks.all[e];if(t&&t.length)for(var r,a=0;r=t[a++];)r(n)}},Token:W};function W(e,n,t,r){this.type=e,this.content=n,this.alias=t,this.length=0|(r||"").length}function z(e,n,t,r){e.lastIndex=n;var a=e.exec(t);if(a&&r&&a[1]){var i=a[1].length;a.index+=i,a[0]=a[0].slice(i)}return a}function i(){var e={value:null,prev:null,next:null},n={value:null,prev:e,next:null};e.next=n,this.head=e,this.tail=n,this.length=0}function I(e,n,t){var r=n.next,a={value:t,prev:n,next:r};return n.next=a,r.prev=a,e.length++,a}function q(e,n,t){for(var r=n.next,a=0;a<t&&r!==e.tail;a++)r=r.next;(n.next=r).prev=n,e.length-=a}if(u.Prism=M,W.stringify=function n(e,t){if("string"==typeof e)return e;if(Array.isArray(e)){var r="";return e.forEach(function(e){r+=n(e,t)}),r}var a={type:e.type,content:n(e.content,t),tag:"span",classes:["token",e.type],attributes:{},language:t},i=e.alias;i&&(Array.isArray(i)?Array.prototype.push.apply(a.classes,i):a.classes.push(i)),M.hooks.run("wrap",a);var l="";for(var o in a.attributes)l+=" "+o+'="'+(a.attributes[o]||"").replace(/"/g,"&quot;")+'"';return"<"+a.tag+' class="'+a.classes.join(" ")+'"'+l+">"+a.content+"</"+a.tag+">"},!u.document)return u.addEventListener&&(M.disableWorkerMessageHandler||u.addEventListener("message",function(e){var n=JSON.parse(e.data),t=n.language,r=n.code,a=n.immediateClose;u.postMessage(M.highlight(r,M.languages[t],t)),a&&u.close()},!1)),M;var r=M.util.currentScript();function a(){M.manual||M.highlightAll()}if(r&&(M.filename=r.src,r.hasAttribute("data-manual")&&(M.manual=!0)),!M.manual){var l=document.readyState;"loading"===l||"interactive"===l&&r&&r.defer?document.addEventListener("DOMContentLoaded",a):window.requestAnimationFrame?window.requestAnimationFrame(a):window.setTimeout(a,16)}return M}(_self);"undefined"!=typeof module&&module.exports&&(module.exports=Prism),"undefined"!=typeof global&&(global.Prism=Prism);
+Prism.languages.markup={comment:{pattern:/<!--(?:(?!<!--)[\s\S])*?-->/,greedy:!0},prolog:{pattern:/<\?[\s\S]+?\?>/,greedy:!0},doctype:{pattern:/<!DOCTYPE(?:[^>"'[\]]|"[^"]*"|'[^']*')+(?:\[(?:[^<"'\]]|"[^"]*"|'[^']*'|<(?!!--)|<!--(?:[^-]|-(?!->))*-->)*\]\s*)?>/i,greedy:!0,inside:{"internal-subset":{pattern:/(^[^\[]*\[)[\s\S]+(?=\]>$)/,lookbehind:!0,greedy:!0,inside:null},string:{pattern:/"[^"]*"|'[^']*'/,greedy:!0},punctuation:/^<!|>$|[[\]]/,"doctype-tag":/^DOCTYPE/i,name:/[^\s<>'"]+/}},cdata:{pattern:/<!\[CDATA\[[\s\S]*?\]\]>/i,greedy:!0},tag:{pattern:/<\/?(?!\d)[^\s>\/=$<%]+(?:\s(?:\s*[^\s>\/=]+(?:\s*=\s*(?:"[^"]*"|'[^']*'|[^\s'">=]+(?=[\s>]))|(?=[\s/>])))+)?\s*\/?>/,greedy:!0,inside:{tag:{pattern:/^<\/?[^\s>\/]+/,inside:{punctuation:/^<\/?/,namespace:/^[^\s>\/:]+:/}},"special-attr":[],"attr-value":{pattern:/=\s*(?:"[^"]*"|'[^']*'|[^\s'">=]+)/,inside:{punctuation:[{pattern:/^=/,alias:"attr-equals"},/"|'/]}},punctuation:/\/?>/,"attr-name":{pattern:/[^\s>\/]+/,inside:{namespace:/^[^\s>\/:]+:/}}}},entity:[{pattern:/&[\da-z]{1,8};/i,alias:"named-entity"},/&#x?[\da-f]{1,8};/i]},Prism.languages.markup.tag.inside["attr-value"].inside.entity=Prism.languages.markup.entity,Prism.languages.markup.doctype.inside["internal-subset"].inside=Prism.languages.markup,Prism.hooks.add("wrap",function(a){"entity"===a.type&&(a.attributes.title=a.content.replace(/&amp;/,"&"))}),Object.defineProperty(Prism.languages.markup.tag,"addInlined",{value:function(a,e){var s={};s["language-"+e]={pattern:/(^<!\[CDATA\[)[\s\S]+?(?=\]\]>$)/i,lookbehind:!0,inside:Prism.languages[e]},s.cdata=/^<!\[CDATA\[|\]\]>$/i;var t={"included-cdata":{pattern:/<!\[CDATA\[[\s\S]*?\]\]>/i,inside:s}};t["language-"+e]={pattern:/[\s\S]+/,inside:Prism.languages[e]};var n={};n[a]={pattern:RegExp("(<__[^>]*>)(?:<!\\[CDATA\\[(?:[^\\]]|\\](?!\\]>))*\\]\\]>|(?!<!\\[CDATA\\[)[^])*?(?=</__>)".replace(/__/g,function(){return a}),"i"),lookbehind:!0,greedy:!0,inside:t},Prism.languages.insertBefore("markup","cdata",n)}}),Object.defineProperty(Prism.languages.markup.tag,"addAttribute",{value:function(a,e){Prism.languages.markup.tag.inside["special-attr"].push({pattern:RegExp("(^|[\"'\\s])(?:"+a+")\\s*=\\s*(?:\"[^\"]*\"|'[^']*'|[^\\s'\">=]+(?=[\\s>]))","i"),lookbehind:!0,inside:{"attr-name":/^[^\s=]+/,"attr-value":{pattern:/=[\s\S]+/,inside:{value:{pattern:/(^=\s*(["']|(?!["'])))\S[\s\S]*(?=\2$)/,lookbehind:!0,alias:[e,"language-"+e],inside:Prism.languages[e]},punctuation:[{pattern:/^=/,alias:"attr-equals"},/"|'/]}}}})}}),Prism.languages.html=Prism.languages.markup,Prism.languages.mathml=Prism.languages.markup,Prism.languages.svg=Prism.languages.markup,Prism.languages.xml=Prism.languages.extend("markup",{}),Prism.languages.ssml=Prism.languages.xml,Prism.languages.atom=Prism.languages.xml,Prism.languages.rss=Prism.languages.xml;
+!function(s){var e=/(?:"(?:\\(?:\r\n|[\s\S])|[^"\\\r\n])*"|'(?:\\(?:\r\n|[\s\S])|[^'\\\r\n])*')/;s.languages.css={comment:/\/\*[\s\S]*?\*\//,atrule:{pattern:/@[\w-](?:[^;{\s]|\s+(?![\s{]))*(?:;|(?=\s*\{))/,inside:{rule:/^@[\w-]+/,"selector-function-argument":{pattern:/(\bselector\s*\(\s*(?![\s)]))(?:[^()\s]|\s+(?![\s)])|\((?:[^()]|\([^()]*\))*\))+(?=\s*\))/,lookbehind:!0,alias:"selector"},keyword:{pattern:/(^|[^\w-])(?:and|not|only|or)(?![\w-])/,lookbehind:!0}}},url:{pattern:RegExp("\\burl\\((?:"+e.source+"|(?:[^\\\\\r\n()\"']|\\\\[^])*)\\)","i"),greedy:!0,inside:{function:/^url/i,punctuation:/^\(|\)$/,string:{pattern:RegExp("^"+e.source+"$"),alias:"url"}}},selector:{pattern:RegExp("(^|[{}\\s])[^{}\\s](?:[^{};\"'\\s]|\\s+(?![\\s{])|"+e.source+")*(?=\\s*\\{)"),lookbehind:!0},string:{pattern:e,greedy:!0},property:{pattern:/(^|[^-\w\xA0-\uFFFF])(?!\s)[-_a-z\xA0-\uFFFF](?:(?!\s)[-\w\xA0-\uFFFF])*(?=\s*:)/i,lookbehind:!0},important:/!important\b/i,function:{pattern:/(^|[^-a-z0-9])[-a-z0-9]+(?=\()/i,lookbehind:!0},punctuation:/[(){};:,]/},s.languages.css.atrule.inside.rest=s.languages.css;var t=s.languages.markup;t&&(t.tag.addInlined("style","css"),t.tag.addAttribute("style","css"))}(Prism);
+Prism.languages.clike={comment:[{pattern:/(^|[^\\])\/\*[\s\S]*?(?:\*\/|$)/,lookbehind:!0,greedy:!0},{pattern:/(^|[^\\:])\/\/.*/,lookbehind:!0,greedy:!0}],string:{pattern:/(["'])(?:\\(?:\r\n|[\s\S])|(?!\1)[^\\\r\n])*\1/,greedy:!0},"class-name":{pattern:/(\b(?:class|extends|implements|instanceof|interface|new|trait)\s+|\bcatch\s+\()[\w.\\]+/i,lookbehind:!0,inside:{punctuation:/[.\\]/}},keyword:/\b(?:break|catch|continue|do|else|finally|for|function|if|in|instanceof|new|null|return|throw|try|while)\b/,boolean:/\b(?:false|true)\b/,function:/\b\w+(?=\()/,number:/\b0x[\da-f]+\b|(?:\b\d+(?:\.\d*)?|\B\.\d+)(?:e[+-]?\d+)?/i,operator:/[<>]=?|[!=]=?=?|--?|\+\+?|&&?|\|\|?|[?*/~^%]/,punctuation:/[{}[\];(),.:]/};
+Prism.languages.javascript=Prism.languages.extend("clike",{"class-name":[Prism.languages.clike["class-name"],{pattern:/(^|[^$\w\xA0-\uFFFF])(?!\s)[_$A-Z\xA0-\uFFFF](?:(?!\s)[$\w\xA0-\uFFFF])*(?=\.(?:constructor|prototype))/,lookbehind:!0}],keyword:[{pattern:/((?:^|\})\s*)catch\b/,lookbehind:!0},{pattern:/(^|[^.]|\.\.\.\s*)\b(?:as|assert(?=\s*\{)|async(?=\s*(?:function\b|\(|[$\w\xA0-\uFFFF]|$))|await|break|case|class|const|continue|debugger|default|delete|do|else|enum|export|extends|finally(?=\s*(?:\{|$))|for|from(?=\s*(?:['"]|$))|function|(?:get|set)(?=\s*(?:[#\[$\w\xA0-\uFFFF]|$))|if|implements|import|in|instanceof|interface|let|new|null|of|package|private|protected|public|return|static|super|switch|this|throw|try|typeof|undefined|var|void|while|with|yield)\b/,lookbehind:!0}],function:/#?(?!\s)[_$a-zA-Z\xA0-\uFFFF](?:(?!\s)[$\w\xA0-\uFFFF])*(?=\s*(?:\.\s*(?:apply|bind|call)\s*)?\()/,number:{pattern:RegExp("(^|[^\\w$])(?:NaN|Infinity|0[bB][01]+(?:_[01]+)*n?|0[oO][0-7]+(?:_[0-7]+)*n?|0[xX][\\dA-Fa-f]+(?:_[\\dA-Fa-f]+)*n?|\\d+(?:_\\d+)*n|(?:\\d+(?:_\\d+)*(?:\\.(?:\\d+(?:_\\d+)*)?)?|\\.\\d+(?:_\\d+)*)(?:[Ee][+-]?\\d+(?:_\\d+)*)?)(?![\\w$])"),lookbehind:!0},operator:/--|\+\+|\*\*=?|=>|&&=?|\|\|=?|[!=]==|<<=?|>>>?=?|[-+*/%&|^!=<>]=?|\.{3}|\?\?=?|\?\.?|[~:]/}),Prism.languages.javascript["class-name"][0].pattern=/(\b(?:class|extends|implements|instanceof|interface|new)\s+)[\w.\\]+/,Prism.languages.insertBefore("javascript","keyword",{regex:{pattern:/((?:^|[^$\w\xA0-\uFFFF."'\])\s]|\b(?:return|yield))\s*)\/(?:\[(?:[^\]\\\r\n]|\\.)*\]|\\.|[^/\\\[\r\n])+\/[dgimyus]{0,7}(?=(?:\s|\/\*(?:[^*]|\*(?!\/))*\*\/)*(?:$|[\r\n,.;:})\]]|\/\/))/,lookbehind:!0,greedy:!0,inside:{"regex-source":{pattern:/^(\/)[\s\S]+(?=\/[a-z]*$)/,lookbehind:!0,alias:"language-regex",inside:Prism.languages.regex},"regex-delimiter":/^\/|\/$/,"regex-flags":/^[a-z]+$/}},"function-variable":{pattern:/#?(?!\s)[_$a-zA-Z\xA0-\uFFFF](?:(?!\s)[$\w\xA0-\uFFFF])*(?=\s*[=:]\s*(?:async\s*)?(?:\bfunction\b|(?:\((?:[^()]|\([^()]*\))*\)|(?!\s)[_$a-zA-Z\xA0-\uFFFF](?:(?!\s)[$\w\xA0-\uFFFF])*)\s*=>))/,alias:"function"},parameter:[{pattern:/(function(?:\s+(?!\s)[_$a-zA-Z\xA0-\uFFFF](?:(?!\s)[$\w\xA0-\uFFFF])*)?\s*\(\s*)(?!\s)(?:[^()\s]|\s+(?![\s)])|\([^()]*\))+(?=\s*\))/,lookbehind:!0,inside:Prism.languages.javascript},{pattern:/(^|[^$\w\xA0-\uFFFF])(?!\s)[_$a-z\xA0-\uFFFF](?:(?!\s)[$\w\xA0-\uFFFF])*(?=\s*=>)/i,lookbehind:!0,inside:Prism.languages.javascript},{pattern:/(\(\s*)(?!\s)(?:[^()\s]|\s+(?![\s)])|\([^()]*\))+(?=\s*\)\s*=>)/,lookbehind:!0,inside:Prism.languages.javascript},{pattern:/((?:\b|\s|^)(?!(?:as|async|await|break|case|catch|class|const|continue|debugger|default|delete|do|else|enum|export|extends|finally|for|from|function|get|if|implements|import|in|instanceof|interface|let|new|null|of|package|private|protected|public|return|set|static|super|switch|this|throw|try|typeof|undefined|var|void|while|with|yield)(?![$\w\xA0-\uFFFF]))(?:(?!\s)[_$a-zA-Z\xA0-\uFFFF](?:(?!\s)[$\w\xA0-\uFFFF])*\s*)\(\s*|\]\s*\(\s*)(?!\s)(?:[^()\s]|\s+(?![\s)])|\([^()]*\))+(?=\s*\)\s*\{)/,lookbehind:!0,inside:Prism.languages.javascript}],constant:/\b[A-Z](?:[A-Z_]|\dx?)*\b/}),Prism.languages.insertBefore("javascript","string",{hashbang:{pattern:/^#!.*/,greedy:!0,alias:"comment"},"template-string":{pattern:/`(?:\\[\s\S]|\$\{(?:[^{}]|\{(?:[^{}]|\{[^}]*\})*\})+\}|(?!\$\{)[^\\`])*`/,greedy:!0,inside:{"template-punctuation":{pattern:/^`|`$/,alias:"string"},interpolation:{pattern:/((?:^|[^\\])(?:\\{2})*)\$\{(?:[^{}]|\{(?:[^{}]|\{[^}]*\})*\})+\}/,lookbehind:!0,inside:{"interpolation-punctuation":{pattern:/^\$\{|\}$/,alias:"punctuation"},rest:Prism.languages.javascript}},string:/[\s\S]+/}},"string-property":{pattern:/((?:^|[,{])[ \t]*)(["'])(?:\\(?:\r\n|[\s\S])|(?!\2)[^\\\r\n])*\2(?=\s*:)/m,lookbehind:!0,greedy:!0,alias:"property"}}),Prism.languages.insertBefore("javascript","operator",{"literal-property":{pattern:/((?:^|[,{])[ \t]*)(?!\s)[_$a-zA-Z\xA0-\uFFFF](?:(?!\s)[$\w\xA0-\uFFFF])*(?=\s*:)/m,lookbehind:!0,alias:"property"}}),Prism.languages.markup&&(Prism.languages.markup.tag.addInlined("script","javascript"),Prism.languages.markup.tag.addAttribute("on(?:abort|blur|change|click|composition(?:end|start|update)|dblclick|error|focus(?:in|out)?|key(?:down|up)|load|mouse(?:down|enter|leave|move|out|over|up)|reset|resize|scroll|select|slotchange|submit|unload|wheel)","javascript")),Prism.languages.js=Prism.languages.javascript;
+</script>
