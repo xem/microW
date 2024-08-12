@@ -1,0 +1,55 @@
+﻿<!doctype html>
+<script src='../w.js'></script>
+<br><center><canvas id=canvas width=600 height=400></canvas>
+<script>
+// WebGL context
+gl = canvas.getContext('webgl2');
+
+// Custom shape: pyramid
+pyramid = () => [
+  // vertices: 
+  new Float32Array([
+    -.5,-.5, .5,   .5,-.5, .5,    0, .5,  0,  // Front
+     .5,-.5, .5,   .5,-.5,-.5,    0, .5,  0,  // Right
+     .5,-.5,-.5,  -.5,-.5,-.5,    0, .5,  0,  // Back
+    -.5,-.5,-.5,  -.5,-.5, .5,    0, .5,  0,  // Left
+     .5,-.5, .5,  -.5,-.5, .5,  -.5,-.5,-.5, // down
+     .5,-.5, .5,  -.5,-.5,-.5,   .5,-.5,-.5
+  ]),
+  
+  // uv 
+  new Float32Array([
+    0, 0,   1, 0,  .5, 1,  // Front
+    0, 0,   1, 0,  .5, 1,  // Right
+    0, 0,   1, 0,  .5, 1,  // Back
+    0, 0,   1, 0,  .5, 1,  // Left
+    1, 1,   0, 1,   0, 0,  // down
+    1, 1,   0, 0,   1, 0
+  ])
+];
+
+// Scene description
+scene = {
+
+  // Clear color (rgb)
+  clear: { col: [0, 0, 0] },
+  
+  // Camera position and rotation
+  camera: {pos: [0, 0, -3], rot: [20, 10, 0]},
+  
+  // Diffuse light position and color
+  diffuseLight: {pos: [.5, -.3, -.7], col: [1, 1, 1]},
+  
+  // Ambient light color
+  ambientLight: {col: [0.3, 0.3, 0.2]},
+  
+  // objects to render
+  objects: [
+    {id: "pyramid1", model: "pyramid", size: [1.5, 1, 1.5], pos: [0, 0, 0], rot: [0, 0, 0], col: [.9, .6, .2]},
+  ]
+};
+
+// Render
+ratio = 600/400;
+W.render(scene, gl, ratio);
+</script>

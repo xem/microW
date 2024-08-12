@@ -1,6 +1,6 @@
 # MicroW
 
-A super micro WebGL 1.0 library that simply renders scenes in 3D.
+A super micro WebGL2 library that renders 3D scenes in less than 1kb.
 
 https://xem.github.io/microW
 
