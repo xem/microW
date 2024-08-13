@@ -49,7 +49,7 @@ scene = {
   b: { c: [.5, .5, .5] },
   
   // Camera position and rotation
-  c: {p: [0, -1, -12], r: [40, 15, 0]},
+  c: {p: [3, -5, -10], r: [20, 10, 0]},
   
   // Diffuse light position and color
   d: {p: [.5, -.3, -.7], c: [1, 1, 1]},
@@ -62,7 +62,7 @@ scene = {
     {m: "cube", s: [1, 1, 3], p: [-5, 0, 0], r: [0, 0, 0], c: [1, 0, 0]},
     {m: "cube", s: [2, 1, 1], p: [0, 0, 0], r: [0, 0, 0], c: [0, 1, 0]},
     {m: "cube", s: [1, 3, 1], p: [5, 0, 0], r: [0, 0, 0], c: [0, 0, 1]},
-    {m: "plane", s: [2, 2], p: [0, 2, -5], r: [0, -5, 0], c: [1, 1, 1]},
+    {m: "plane", s: [2, 2], p: [0, 3, -5], r: [-45, -15, 45], c: [1, 1, 1]},
   ]
 };
 
@@ -73,7 +73,7 @@ W.render(scene, gl, ratio);
 // To animate: update the scene object and call `render` 60 times per second !
 &lt;/script></code></pre>
 
-<iframe src="demos/1.html" width=650 height=450 frameborder=no></iframe>
+<iframe src="demos/1.html" width=650 height=510 frameborder=no></iframe>
 
 <br>
 <br>
@@ -112,7 +112,7 @@ scene = {
   
   // objects to render
   o: [
-    {m: "pyramid", s: [1.5, 1, 1.5], p: [0, 0, 0], r: [0, 0, 0], c: [.9, .6, .2]},
+    {m: "pyramid", s: [1.5, 1, 1.5], p: [0, 0, 0], r: [0, 30, 0], c: [.9, .6, .2]},
   ]
 }
 &lt;/script></code></pre>

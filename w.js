@@ -88,7 +88,7 @@ W = {
       // Camera matrix (fov: 30deg, near: 0.1, far: 100)
       gl.uniformMatrix4fv(gl.getUniformLocation(program, 'M'), 0, (new DOMMatrix([
       1.8 / aspectratio, 0, 0, 0,  0, 1.8, 0, 0,  0, 0, -1.001, -1,  0, 0, -.2, 0
-      ]).translate(...scene.c.p).rotate(...scene.c.r)).multiply(modelMatrix).toFloat32Array());
+      ]).rotate(...scene.c.r)).translate(...scene.c.p).multiply(modelMatrix).toFloat32Array());
 
       // Render
       // (Special case for plane: render the front face of a cube)
