@@ -11,26 +11,26 @@ gl = canvas.getContext('webgl2');
 scene = {
 
   // Clear color (rgb)
-  clear: { col: [.8, .9, 1] },
+  b: { c: [.8, .9, 1] },
   
   // Camera position and rotation
-  camera: {pos: [0, -1, -9], rot: [15, 5, 0]},
+  c: {p: [0, -1, -9], r: [15, 5, 0]},
   
   // Diffuse light position and color
-  diffuseLight: {pos: [.5, -.3, -.7], col: [1, 1, 1]},
+  d: {p: [.5, -.3, -.7], c: [1, 1, 1]},
   
   // Ambient light color
-  ambientLight: {col: [0.3, 0.3, 0.2]},
+  a: {c: [0.3, 0.3, 0.2]},
   
   // Objects to render
-  objects: [
+  o: [
     // Opaque objects first...
-    {id: "cube1", model: "cube", size: [1, 1, 1], pos: [-.8, 0, 0], rot: [0, 0, 0], tex: brick},
-    {id: "cube1", model: "cube", size: [1, 1, 1], pos: [-.8, 0, -7], rot: [0, 0, 0], tex: brick},
+    {m: "cube", s: [1, 1, 1], p: [-.8, 0, 0], r: [0, 0, 0], t: brick},
+    {m: "cube", s: [1, 1, 1], p: [-.8, 0, -7], r: [0, 0, 0], t: brick},
     
-    // then objects with transparency from back to front
-    {id: "plane1", model: "plane", size: [1, 1], pos: [-2, 1, -2], rot: [0, 0, 0], tex: tree},
-    {id: "plane2", model: "plane", size: [1, 1], pos: [.3, 2, 5], rot: [0, 0, 0], tex: tree},
+    // ... then objects with transparency ordered from back to front
+    {m: "plane", s: [1, 1], p: [-2, 1, -2], r: [0, 0, 0], t: tree},
+    {m: "plane", s: [1, 1], p: [.3, 2, 5], r: [0, 0, 0], t: tree},
   ]
 };
 

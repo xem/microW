@@ -14,7 +14,7 @@
 <ul class=top>
 <li>Built-in 3D models (cubes & planes)
 </span>
-<li>Custom 3D models / UV (see <a href="https://xem.github.io/obj2js">OBJ loader</a>)
+<li>Custom 3D models / UV (see <a href="https://xem.github.io/W/obj2js">OBJ loader</a>)
 <li>Easy coloring, texturing, transparency
 <li>Easy position, rotation, scale
 <li>Custom clear color
@@ -28,7 +28,7 @@
 <br>
 <div id=dl>
 <a href="w.js" download>Commented<br>(5kb)</a>
-<a href="w.min.js" download>Minified <br>(2.5kb, 1kb zipped)</a>
+<a href="w.min.js" download>Minified <br>(2.4kb, 0.9kb zipped)</a>
 <p>or load it in HTML:
 <pre class=language-html><code>&lt;script src=//xem.github.io/microW/w.min.js>&lt;/script></code></pre>
 </div>
@@ -45,24 +45,24 @@ gl = canvas.getContext('webgl2');
 // Scene description
 scene = {
 
-  // Clear color (rgb)
-  clear: { col: [.5, .5, .5] },
+  // Background color (rgb)
+  b: { c: [.5, .5, .5] },
   
   // Camera position and rotation
-  camera: {pos: [0, -1, -12], rot: [40, 15, 0]},
+  c: {p: [0, -1, -12], r: [40, 15, 0]},
   
   // Diffuse light position and color
-  diffuseLight: {pos: [.5, -.3, -.7], col: [1, 1, 1]},
+  d: {p: [.5, -.3, -.7], c: [1, 1, 1]},
   
   // Ambient light color
-  ambientLight: {col: [0.3, 0.3, 0.2]},
+  a: {c: [0.3, 0.3, 0.2]},
   
-  // Objects to render (ic, model, size, position, rotation, color
-  objects: [
-    {id:"cube1",model:"cube",size:[1,1,3],pos:[-5,0,0],rot:[0,0,0],col:[1,0,0]},
-    {id:"cube2",model:"cube",size:[2,1,1],pos:[0,0,0],rot:[0,0,0],col:[0,1,0]},
-    {id:"cube3",model:"cube",size:[1,3,1],pos:[5,0,0],rot:[0,0,0],col:[0,0,1]},
-    {id:"plane1",model:"plane",size:[2,2],pos:[0,2,-5],rot:[0,-5,0],col:[1,1,1]}
+  // Objects to render (model, size, position, rotation, color)
+  o: [
+    {m: "cube", s: [1, 1, 3], p: [-5, 0, 0], r: [0, 0, 0], c: [1, 0, 0]},
+    {m: "cube", s: [2, 1, 1], p: [0, 0, 0], r: [0, 0, 0], c: [0, 1, 0]},
+    {m: "cube", s: [1, 3, 1], p: [5, 0, 0], r: [0, 0, 0], c: [0, 0, 1]},
+    {m: "plane", s: [2, 2], p: [0, 2, -5], r: [0, -5, 0], c: [1, 1, 1]},
   ]
 };
 
@@ -111,8 +111,8 @@ scene = {
   // ...
   
   // objects to render
-  objects: [
-    {id:"p",model:"pyramid",size:[1.5,1,1.5],pos:[0,0,0],rot:[0,0,0],col:[.9,.6,.2]},
+  o: [
+    {m: "pyramid", s: [1.5, 1, 1.5], p: [0, 0, 0], r: [0, 0, 0], c: [.9, .6, .2]},
   ]
 }
 &lt;/script></code></pre>
@@ -133,14 +133,15 @@ scene = {
 // ...
 scene = {
 
-  objects: [
+  // Objects to render
+  o: [
     // Opaque objects first...
-    {id:"cube1",model:"cube",size:[1,1,1],pos:[-.8,0,0],rot:[0,0,0],tex:brick},
-    {id:"cube1",model:"cube",size:[1,1,1],pos:[-.8,0,-7],rot:[0,0,0],tex:brick},
-
+    {m: "cube", s: [1, 1, 1], p: [-.8, 0, 0], r: [0, 0, 0], t: brick},
+    {m: "cube", s: [1, 1, 1], p: [-.8, 0, -7], r: [0, 0, 0], t: brick},
+    
     // ... then objects with transparency ordered from back to front
-    {id:"plane1",model:"plane",size:[1,1],pos:[-2,1,-2],rot:[0,0,0],tex:tree},
-    {id:"plane2",model:"plane",size:[1,1],pos:[.3,2,5],rot:[0,0,0],tex:tree},
+    {m: "plane", s: [1, 1], p: [-2, 1, -2], r: [0, 0, 0], t: tree},
+    {m: "plane", s: [1, 1], p: [.3, 2, 5], r: [0, 0, 0], t: tree},
   ]
 };
 &lt;/script>
